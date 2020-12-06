@@ -7,6 +7,13 @@ pub type TResult<T> = std::result::Result<T, AdventError>;
 
 #[derive(Debug, Error)]
 pub enum AdventError {
+
+    #[error("Unable to parse day {day} input: {msg}")]
+    ParseError {
+        day: u8,
+        msg: String,
+    },
+
     #[error("Unable to open file: {0}")]
     FileError(std::io::Error),
 
