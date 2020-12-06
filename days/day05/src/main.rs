@@ -1,4 +1,4 @@
-use aoc2020::{TResult, AdventError, read_file};
+use aoc2020::{read_file, AdventError, TResult};
 
 fn main() -> TResult<()> {
     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", "input");
@@ -34,8 +34,9 @@ fn part2(input: &str) -> TResult<usize> {
         .ok_or(AdventError::UnableToCompute)
 }
 
-fn seats(input: &str) -> TResult<impl IntoIterator<Item=(usize, usize)>> {
-    input.lines()
+fn seats(input: &str) -> TResult<impl IntoIterator<Item = (usize, usize)>> {
+    input
+        .lines()
         .map(|pass| {
             let pass = replace(pass)?;
 
@@ -43,33 +44,32 @@ fn seats(input: &str) -> TResult<impl IntoIterator<Item=(usize, usize)>> {
             let row = &pass[0..div];
             let col = &pass[div..];
 
-
             let col = usize::from_str_radix(col, 2).map_err(|_| AdventError::ParseError {
                 day: 5,
-                msg: "can't parse col to num".to_string()
+                msg: "can't parse col to num".to_string(),
             })?;
 
             let row = usize::from_str_radix(row, 2).map_err(|_| AdventError::ParseError {
                 day: 5,
-                msg: "can't parse row to num".to_string()
+                msg: "can't parse row to num".to_string(),
             })?;
 
             Ok((col, row))
-
-        }).collect::<TResult<Vec<_>>>()
+        })
+        .collect::<TResult<Vec<_>>>()
 }
 
 fn replace(text: &str) -> TResult<String> {
-    text.chars().map(|c| {
-        match c {
+    text.chars()
+        .map(|c| match c {
             'B' => Ok('1'),
             'F' => Ok('0'),
             'L' => Ok('0'),
             'R' => Ok('1'),
             _ => Err(AdventError::ParseError {
                 day: 5,
-                msg: "unsupported character found".to_string()
-            })
-        }
-    }).collect()
+                msg: "unsupported character found".to_string(),
+            }),
+        })
+        .collect()
 }

@@ -1,4 +1,4 @@
-use aoc2020::{TResult, AdventError, read_file};
+use aoc2020::{read_file, AdventError, TResult};
 use std::collections::HashMap;
 use std::convert::TryFrom;
 
@@ -15,17 +15,23 @@ fn main() -> TResult<()> {
 }
 
 fn part1(input: &str) -> TResult<Output> {
-    let passports = input.split("\n\n")
+    let passports = input
+        .split("\n\n")
         .map(Passport::try_from)
         .collect::<TResult<Vec<_>>>()?;
 
-    let required_fields: &'static [&'static str] = &["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
+    let required_fields: &'static [&'static str] =
+        &["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"];
 
-    Ok(passports.iter().filter(|p| p.is_valid(required_fields)).count())
+    Ok(passports
+        .iter()
+        .filter(|p| p.is_valid(required_fields))
+        .count())
 }
 
 fn part2(input: &str) -> TResult<Output> {
-    let passports = input.split("\n\n")
+    let passports = input
+        .split("\n\n")
         .map(Passport::try_from)
         .collect::<TResult<Vec<_>>>()?;
 
@@ -34,7 +40,13 @@ fn part2(input: &str) -> TResult<Output> {
     let range_validator = &move |from: u16, up_to_and_including: u16| {
         // the first check is to make sure we have a valid date in range; this check will reject most cases where the length is not 4
         // the second check is too make sure we don't allow leading zeros, which FromStr::<u16>::parse accepts
-        move |input: &str| input.parse::<u16>().map(|year| year >= from && year <= up_to_and_including).unwrap_or(false) && input.len() == 4
+        move |input: &str| {
+            input
+                .parse::<u16>()
+                .map(|year| year >= from && year <= up_to_and_including)
+                .unwrap_or(false)
+                && input.len() == 4
+        }
     };
 
     let v = range_validator(1920, 2002);
@@ -52,10 +64,9 @@ fn part2(input: &str) -> TResult<Output> {
             match unit {
                 "cm" if value >= 150 && value <= 193 => true,
                 "in" if value >= 59 && value <= 76 => true,
-                _ => false
+                _ => false,
             }
-        }
-        else {
+        } else {
             false
         }
     });
@@ -63,7 +74,11 @@ fn part2(input: &str) -> TResult<Output> {
     requirements.insert("hcl", &move |hcl: &str| {
         let color = &hcl[1..];
 
-        hcl.starts_with('#') && color.len() == 6 && color.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
+        hcl.starts_with('#')
+            && color.len() == 6
+            && color
+                .chars()
+                .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
     });
 
     requirements.insert("ecl", &move |ecl: &str| {
@@ -75,8 +90,10 @@ fn part2(input: &str) -> TResult<Output> {
         pid.len() == 9 && pid.chars().all(|c| c.is_ascii_digit())
     });
 
-
-    Ok(passports.iter().filter(|p| p.is_extra_valid(&requirements)).count())
+    Ok(passports
+        .iter()
+        .filter(|p| p.is_extra_valid(&requirements))
+        .count())
 }
 
 #[derive(Debug)]
@@ -93,9 +110,7 @@ impl<'source> TryFrom<&'source str> for Passport<'source> {
             .map(split_key_value_pair) // map each to a key value pair
             .collect::<TResult<HashMap<&'source str, &'source str>>>()?;
 
-        Ok(Self {
-            fields
-        })
+        Ok(Self { fields })
     }
 }
 
@@ -115,23 +130,21 @@ fn split_key_value_pair(pair: &str) -> TResult<(&str, &str)> {
 
 impl<'source> Passport<'source> {
     fn is_valid(&self, required_fields: &'static [&'static str]) -> bool {
-
-        required_fields.iter()
+        required_fields
+            .iter()
             .all(|expected| self.fields.contains_key(expected))
     }
 
     fn is_extra_valid(&self, requirements: &HashMap<&'static str, &dyn Fn(&str) -> bool>) -> bool {
-        requirements.iter()
-            .all(|(field, validator)| {
-                if let Some(found_field_value) = self.fields.get(field) {
-                    // here we found the field, and we'll let the validator decide whether it is actually valid
-                    validator(found_field_value)
-                }
-                else {
-                    // in this case the field was not found, but it was required
-                    false
-                }
-            })
+        requirements.iter().all(|(field, validator)| {
+            if let Some(found_field_value) = self.fields.get(field) {
+                // here we found the field, and we'll let the validator decide whether it is actually valid
+                validator(found_field_value)
+            } else {
+                // in this case the field was not found, but it was required
+                false
+            }
+        })
     }
 }
 

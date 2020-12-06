@@ -1,4 +1,4 @@
-use aoc2020::{TResult, read_file};
+use aoc2020::{read_file, TResult};
 use std::ops::Mul;
 
 #[derive(Default, Debug)]
@@ -45,17 +45,14 @@ struct Offset {
 
 impl Offset {
     fn new(right: usize, down: usize) -> Self {
-        Self {
-            right,
-            down
-        }
+        Self { right, down }
     }
 }
 
 #[derive(Debug)]
 struct BiomeStableArea {
     // Stores y by x tiles
-    map: Vec<Vec<Tile>>
+    map: Vec<Vec<Tile>>,
 }
 
 impl BiomeStableArea {
@@ -73,13 +70,12 @@ impl BiomeStableArea {
 
 impl<'s> From<&'s str> for BiomeStableArea {
     fn from(string: &'s str) -> Self {
-        let map = string.lines()
-            .map(|s| s.chars().map(Into::<Tile>::into).collect::<Vec<_>>()).collect::<Vec<_>>();
+        let map = string
+            .lines()
+            .map(|s| s.chars().map(Into::<Tile>::into).collect::<Vec<_>>())
+            .collect::<Vec<_>>();
 
-        Self {
-            map
-        }
-
+        Self { map }
     }
 }
 
@@ -94,7 +90,7 @@ impl From<char> for Tile {
         match tile {
             '.' => Self::Square,
             '#' => Self::Tree,
-            c => unreachable!("The advent of code input is nice ^^, {}", c)
+            c => unreachable!("The advent of code input is nice ^^, {}", c),
         }
     }
 }
@@ -105,7 +101,6 @@ impl Tile {
     }
 }
 
-
 fn main() {
     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", "input");
     let input = read_file(path).expect("Unable to read file");
@@ -114,9 +109,11 @@ fn main() {
     println!("exercise 2: {}", part2(&input).unwrap());
 }
 
-fn detected_trees_for_slopes<'iter, I: Iterator<Item=&'iter Offset> + 'iter>(area: &'iter BiomeStableArea ,offsets: I) -> impl Iterator<Item=usize> + 'iter {
-    offsets
-        .map(move |offset| detected_trees(area, *offset))
+fn detected_trees_for_slopes<'iter, I: Iterator<Item = &'iter Offset> + 'iter>(
+    area: &'iter BiomeStableArea,
+    offsets: I,
+) -> impl Iterator<Item = usize> + 'iter {
+    offsets.map(move |offset| detected_trees(area, *offset))
 }
 
 fn detected_trees(area: &BiomeStableArea, offset: Offset) -> usize {
@@ -163,4 +160,3 @@ fn part2(input: &str) -> TResult<usize> {
 
     Ok(trees)
 }
-

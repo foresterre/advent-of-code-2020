@@ -1,5 +1,5 @@
+use aoc2020::{lines, AdventError, TResult};
 use std::collections::HashSet;
-use aoc2020::{lines, TResult, AdventError};
 
 fn main() {
     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", "input_01");
