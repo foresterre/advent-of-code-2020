@@ -60,7 +60,7 @@ mod tests {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", "input_example");
         let input = read_file(path).unwrap();
 
-        assert_eq!(part1(&input).unwrap(), 9999);
+        assert_eq!(part1(&input).unwrap(), 11);
     }
 
     #[test]
@@ -68,6 +68,6 @@ mod tests {
         let path = concat!(env!("CARGO_MANIFEST_DIR"), "/", "input_example");
         let input = read_file(path).unwrap();
 
-        assert_eq!(part2(&input).unwrap(), 9999);
+        assert_eq!(part2(&input).unwrap(), 6);
     }
 }
