@@ -1,5 +1,5 @@
 [package]
-name = "aoc2020"
+name = "day06"
 version = "0.1.0"
 authors = ["Martijn Gribnau <garm@ilumeo.com>"]
 edition = "2018"
@@ -7,14 +7,4 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-thiserror = "1.0.22"
-
-[workspace]
-members = [
-	"days/day01",
-	"days/day02",
-	"days/day03",
-	"days/day04",
-	"days/day05",
-	"days/day06",
-]
+aoc2020 = { path = "../../" }
